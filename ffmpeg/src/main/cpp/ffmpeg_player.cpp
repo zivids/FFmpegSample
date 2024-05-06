@@ -60,7 +60,7 @@ Java_com_coocent_ffmpeg_FFmpegPlayer_nativeSetDataSource(JNIEnv *env, jobject th
 {
     const char *jpath = env->GetStringUTFChars(path, JNI_FALSE);
     const string url = string(jpath);
-    auto *player = reinterpret_cast<Player *>(handle);
+    auto *player = reinterpret_cast<FFmpegPlayer *>(handle);
     player->setDataSource(url);
     env->ReleaseStringUTFChars(path, jpath);
 }
@@ -69,7 +69,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_coocent_ffmpeg_FFmpegPlayer_nativePrepareAsync(JNIEnv *env, jobject thiz, jlong handle)
 {
-    auto *player = reinterpret_cast<Player *>(handle);
+    auto *player = reinterpret_cast<FFmpegPlayer *>(handle);
     player->prepareAsync();
 }
 
@@ -77,7 +77,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_coocent_ffmpeg_FFmpegPlayer_nativeStart(JNIEnv *env, jobject thiz, jlong handle)
 {
-    auto *player = reinterpret_cast<Player *>(handle);
+    auto *player = reinterpret_cast<FFmpegPlayer *>(handle);
     player->start();
 }
 
@@ -85,7 +85,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_coocent_ffmpeg_FFmpegPlayer_nativePause(JNIEnv *env, jobject thiz, jlong handle)
 {
-    auto *player = reinterpret_cast<Player *>(handle);
+    auto *player = reinterpret_cast<FFmpegPlayer *>(handle);
     player->pause();
 }
 
@@ -93,7 +93,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_coocent_ffmpeg_FFmpegPlayer_nativeStop(JNIEnv *env, jobject thiz, jlong handle)
 {
-    auto *player = reinterpret_cast<Player *>(handle);
+    auto *player = reinterpret_cast<FFmpegPlayer *>(handle);
     player->stop();
 }
 
@@ -109,7 +109,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_coocent_ffmpeg_FFmpegPlayer_nativeRelease(JNIEnv *env, jobject thiz, jlong handle)
 {
-    auto *player = reinterpret_cast<Player *>(handle);
+    auto *player = reinterpret_cast<FFmpegPlayer *>(handle);
     player->release();
     delete player;
 }

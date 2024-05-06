@@ -5,31 +5,50 @@
 #ifndef FFMPEGSAMPLE_FFMPEGPLAYER_H
 #define FFMPEGSAMPLE_FFMPEGPLAYER_H
 
-#include "Player.h"
+#include <string>
+#include <thread>
+
+extern "C" {
+#include <libavformat/avformat.h>
+}
 
 using namespace std;
 
-class FFmpegPlayer : public Player
+class FFmpegPlayer
 {
 public:
     FFmpegPlayer() {};
 
-    ~FFmpegPlayer() override;
+    ~FFmpegPlayer();
 
-    void prepareAsync() override;
+    void setDataSource(const string &url);
 
-    void start() override;
+    void prepareAsync();
 
-    void pause() override;
+    void start();
 
-    void seekTo(float position) override;
+    void pause();
 
-    void stop() override;
+    void seekTo(float position);
 
-    void release() override;
+    void stop();
+
+    void release();
 
 private:
+    int open();
+    void decoding();
+
+private:
+    unique_ptr<string> mUrl = nullptr;
     AVFormatContext *mAvFormatContext;
+    AVCodecContext *mAVCodecContext;
+    AVCodec *mAVCodec;
+    AVPacket *mAVPacket;
+    AVFrame *mAVFrame;
+    thread *mThread = nullptr;
+    mutex mMutex;
+    condition_variable mCondition;
 };
 
 

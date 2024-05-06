@@ -29,7 +29,7 @@ public:
 
     virtual void stop() = 0;
 
-    virtual void release();
+    virtual void release() = 0;
 
 protected:
     unique_ptr<string> mUrl = nullptr;
