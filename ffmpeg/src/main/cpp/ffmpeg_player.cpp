@@ -113,3 +113,12 @@ Java_com_coocent_ffmpeg_FFmpegPlayer_nativeRelease(JNIEnv *env, jobject thiz, jl
     player->release();
     delete player;
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_coocent_ffmpeg_FFmpegPlayer_nativeSetSurface(JNIEnv *env, jobject thiz, jlong handle,
+                                                      jobject surface)
+{
+    auto *player = reinterpret_cast<FFmpegPlayer *>(handle);
+    player->setSurface(ANativeWindow_fromSurface(env, surface));
+}

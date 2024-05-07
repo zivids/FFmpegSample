@@ -7,12 +7,14 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/ffmpeg_button"
+        android:enabled="false"
         android:text="FFMPEG"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/media_button"
+        android:enabled="false"
         android:text="MEDIA"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

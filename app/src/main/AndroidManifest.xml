@@ -26,6 +26,12 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".FFmpegActivity"
+            android:exported="false">
+
+        </activity>
+
     </application>
 
 </manifest>

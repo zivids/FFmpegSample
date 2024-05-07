@@ -1,13 +1,15 @@
 package com.coocent.ffmpegsample
 
-import android.media.MediaPlayer
-import android.media.MediaPlayer.OnPreparedListener
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.coocent.ffmpeg.FFmpegPlayer
+import androidx.core.content.ContextCompat
 import com.coocent.ffmpegsample.databinding.ActivityMainBinding
 
 /**
@@ -24,10 +26,23 @@ class MainActivity : AppCompatActivity(), OnClickListener
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        Log.d("TAGF", FFmpegPlayer.getFFmpegVersion())
-        val player = FFmpegPlayer()
-        player.setDataSource("test ffmpeg")
-        player.prepareAsync()
+        val launcher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            binding.ffmpegButton.isEnabled = granted
+            binding.mediaButton.isEnabled = granted
+        }
+        val permission = when
+        {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE ->
+            {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission
+                    .READ_MEDIA_VISUAL_USER_SELECTED) == PackageManager.PERMISSION_GRANTED)
+                    Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED else
+                        Manifest.permission.READ_MEDIA_VIDEO
+            }
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> Manifest.permission.READ_MEDIA_VIDEO
+            else -> Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+        launcher.launch(permission)
 
         binding.ffmpegButton.setOnClickListener(this)
         binding.mediaButton.setOnClickListener(this)
@@ -37,7 +52,7 @@ class MainActivity : AppCompatActivity(), OnClickListener
     {
         when (v.id)
         {
-            R.id.ffmpeg_button -> {}
+            R.id.ffmpeg_button -> startActivity(Intent(this, FFmpegActivity::class.java))
             R.id.media_button -> {}
         }
     }

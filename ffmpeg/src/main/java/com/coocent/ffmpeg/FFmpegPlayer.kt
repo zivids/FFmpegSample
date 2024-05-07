@@ -1,5 +1,7 @@
 package com.coocent.ffmpeg
 
+import android.media.MediaPlayer
+import android.view.Surface
 import com.coocent.ffmpeg.listener.OnPreparedListener
 
 /**
@@ -52,6 +54,16 @@ class FFmpegPlayer : OnPreparedListener
         nativeStart(playerHandle)
     }
 
+    fun pause()
+    {
+        nativePause(playerHandle)
+    }
+
+    fun setSurface(surface: Surface)
+    {
+        nativeSetSurface(playerHandle, surface)
+    }
+
     fun release()
     {
         nativeRelease(playerHandle)
@@ -76,6 +88,8 @@ class FFmpegPlayer : OnPreparedListener
     private external fun nativeStop(handle: Long)
 
     private external fun nativeSeekTo(handle: Long, position: Long)
+
+    private external fun nativeSetSurface(handle: Long, surface: Surface)
 
     private external fun nativeRelease(handle: Long)
 }

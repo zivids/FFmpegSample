@@ -5,11 +5,16 @@
 #ifndef FFMPEGSAMPLE_FFMPEGPLAYER_H
 #define FFMPEGSAMPLE_FFMPEGPLAYER_H
 
+#include <android/native_window.h>
+#include <android/native_window_jni.h>
 #include <string>
 #include <thread>
 
 extern "C" {
 #include <libavformat/avformat.h>
+#include <libswscale/swscale.h>
+#include <libavutil/imgutils.h>
+#include <libavcodec/jni.h>
 }
 
 using namespace std;
@@ -33,10 +38,12 @@ public:
 
     void stop();
 
+    void setSurface(ANativeWindow *nativeWindow);
+
     void release();
 
 private:
-    int open();
+    int prepareToDecode();
     void decoding();
 
 private:
@@ -46,9 +53,14 @@ private:
     AVCodec *mAVCodec;
     AVPacket *mAVPacket;
     AVFrame *mAVFrame;
+    ANativeWindow *mANativeWindow;
     thread *mThread = nullptr;
     mutex mMutex;
     condition_variable mCondition;
+    int videoStreamIndex = -1;
+    bool mPreparedToDecode;
+    bool mInputEOF;
+    bool mOutputEOF;
 };
 
 
