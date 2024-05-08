@@ -71,6 +71,7 @@ add_library( ffmpeg-sample-player SHARED
              ${SRC_FILE})
 
 target_link_libraries( ffmpeg-sample-player
+                       android
                        avcodec
                        avfilter
                        avformat

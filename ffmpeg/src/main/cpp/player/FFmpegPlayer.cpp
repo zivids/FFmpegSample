@@ -56,6 +56,11 @@ void FFmpegPlayer::setSurface(ANativeWindow *nativeWindow)
 
 void FFmpegPlayer::release()
 {
+    if (mANativeWindow != nullptr)
+    {
+        ANativeWindow_release(mANativeWindow);
+    }
+
     if (mAVFrame != nullptr)
     {
         av_frame_free(&mAVFrame);
@@ -255,7 +260,8 @@ void FFmpegPlayer::decoding()
                     {
                         dstWidth = windowWidth;
                         dstHeight = windowWidth * videoHeight / videoWidth;
-                    } else
+                    }
+                    else
                     {
                         dstWidth = windowHeight * videoWidth / videoHeight;
                         dstHeight = windowHeight;
@@ -268,6 +274,18 @@ void FFmpegPlayer::decoding()
                                                             nullptr, nullptr);
                     sws_scale(swsContext, mAVFrame->data, mAVFrame->linesize,
                               0, videoWidth, rgbFrame->data, rgbFrame->linesize);
+
+                    ANativeWindow_setBuffersGeometry(mANativeWindow, videoWidth, videoHeight, WINDOW_FORMAT_RGBA_8888);
+                    ANativeWindow_Buffer nativeWindowBuffer;
+                    ANativeWindow_lock(mANativeWindow, &nativeWindowBuffer, nullptr);
+                    auto *dstBuffer = static_cast<uint8_t *>(nativeWindowBuffer.bits);
+                    int srcLineSize = rgbFrame->linesize[0];
+                    int dstLineSize = nativeWindowBuffer.stride * 4;
+                    for (int i = 0; i < videoHeight; i++)
+                    {
+                        memcpy(dstBuffer + i * dstLineSize, frameBuffer + i * srcLineSize, srcLineSize);
+                    }
+                    ANativeWindow_unlockAndPost(mANativeWindow);
 
                     if (rgbFrame != nullptr)
                     {

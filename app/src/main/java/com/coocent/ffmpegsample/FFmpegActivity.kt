@@ -24,7 +24,7 @@ class FFmpegActivity : AppCompatActivity(), OnClickListener
         setContentView(binding.root)
 
         ffmpegPlayer = FFmpegPlayer()
-        ffmpegPlayer.setDataSource("")
+        ffmpegPlayer.setDataSource("/sdcard/Download/任意门.MP4")
         binding.surfaceView.holder.addCallback(object : SurfaceHolder.Callback
         {
             override fun surfaceCreated(holder: SurfaceHolder)
