@@ -9,6 +9,7 @@
 #include <android/native_window_jni.h>
 #include <string>
 #include <thread>
+#include "ImageDef.h"
 
 extern "C" {
 #include <libavformat/avformat.h>
