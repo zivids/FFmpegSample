@@ -183,6 +183,9 @@ void FFmpegPlayer::decoding()
         dstHeight = windowHeight;
     }
 
+    ANativeWindow_setBuffersGeometry(mANativeWindow, dstWidth,
+                                     dstHeight, WINDOW_FORMAT_RGBA_8888);
+
     AVFrame *rgbFrame = av_frame_alloc();
     int bufferSize = av_image_get_buffer_size(AV_PIX_FMT_RGBA, dstWidth, dstHeight, 1);
     auto *buffer = (uint8_t *) av_malloc(bufferSize * sizeof(uint8_t));
@@ -217,7 +220,7 @@ void FFmpegPlayer::decoding()
                 ANativeWindow_lock(mANativeWindow, &nativeWindowBuffer, nullptr);
                 uint8_t *dstBuffer = static_cast<uint8_t *>(nativeWindowBuffer.bits);
 
-                int srcLineSize = image.width * 4;//RGBA
+                int srcLineSize = image.width * 4;
                 int dstLineSize = nativeWindowBuffer.stride * 4;
 
                 for (int i = 0; i < dstHeight; ++i) {
