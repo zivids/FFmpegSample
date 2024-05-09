@@ -12,13 +12,13 @@ using namespace std;
 class VideoDecoder : public Decoder
 {
 public:
-    VideoDecoder(const string &url) : Decoder(url) {}
+//    VideoDecoder(const string &url) : Decoder(url) {};
 
-//    using Decoder::Decoder;
+    using Decoder::Decoder;
 
     ~VideoDecoder();
 
-    void open() override;
+    bool prepareDecode() override;
 
     void release() override;
 };

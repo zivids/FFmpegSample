@@ -6,7 +6,7 @@
 #define FFMPEGSAMPLE_PLAYER_H
 
 #include <string>
-#include "Decoder.h"
+#include "VideoDecoder.h"
 
 using namespace std;
 
@@ -32,8 +32,8 @@ public:
     virtual void release() = 0;
 
 protected:
-    unique_ptr<string> mUrl = nullptr;
     Decoder *videoDecoder = nullptr;
+    Decoder *audioDecoder = nullptr;
 };
 
 

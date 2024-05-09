@@ -25,8 +25,9 @@
 
     </LinearLayout>
 
-    <SurfaceView
+    <com.coocent.ffmpegsample.MySurfaceView
         android:id="@+id/surface_view"
+        android:layout_centerInParent="true"
         android:layout_above="@+id/control_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

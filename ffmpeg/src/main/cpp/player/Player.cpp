@@ -7,5 +7,12 @@
 
 void Player::setDataSource(const string &url)
 {
-    mUrl = unique_ptr<string>(new string(url));
+    if (videoDecoder == nullptr)
+    {
+        videoDecoder = new VideoDecoder(url);
+    }
+    else
+    {
+        videoDecoder->setUrl(url);
+    }
 }

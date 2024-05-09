@@ -25,6 +25,7 @@ class FFmpegActivity : AppCompatActivity(), OnClickListener
 
         ffmpegPlayer = FFmpegPlayer()
         ffmpegPlayer.setDataSource("/sdcard/Download/任意门.MP4")
+        binding.surfaceView.setAspectRatio(1, 1)
         binding.surfaceView.holder.addCallback(object : SurfaceHolder.Callback
         {
             override fun surfaceCreated(holder: SurfaceHolder)

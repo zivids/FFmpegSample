@@ -14,6 +14,14 @@ extern "C" {
 
 using namespace std;
 
+enum DecoderState
+{
+    STATE_IDLE,
+    STATE_DECODING,
+    STATE_PAUSE,
+    STATE_STOP,
+};
+
 class Decoder
 {
 public:
@@ -21,9 +29,16 @@ public:
 
     virtual ~Decoder() {};
 
-    virtual void open() = 0;
+    virtual void setUrl(const string &url);
+
+    virtual bool prepareDecode() = 0;
+
+    virtual void prepare();
 
     virtual void release() = 0;
+
+protected:
+    virtual void decode();
 
 protected:
     unique_ptr<string> mUrl = nullptr;
@@ -31,8 +46,12 @@ protected:
 private:
     mutex mLockMutex;
     thread *mThread = nullptr;
+    condition_variable mCondition;
 
     AVFormatContext *mAVFormatContext = nullptr;
+
+    volatile int mDecoderState = STATE_IDLE;
+    bool mDecoderPrepared = false;
 };
 
 #endif //FFMPEGSAMPLE_DECODER_H
