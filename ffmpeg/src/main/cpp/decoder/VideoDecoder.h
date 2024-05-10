@@ -18,7 +18,11 @@ public:
 
     ~VideoDecoder();
 
-    bool prepareDecode() override;
+    bool prepareDecoder() override;
+
+    void onDecoderPrepared() override;
+
+    int decodePacket() override;
 
     void release() override;
 };

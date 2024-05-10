@@ -8,10 +8,6 @@
 #include <string>
 #include <thread>
 
-extern "C" {
-#include <libavformat/avformat.h>
-}
-
 using namespace std;
 
 enum DecoderState
@@ -31,26 +27,27 @@ public:
 
     virtual void setUrl(const string &url);
 
-    virtual bool prepareDecode() = 0;
-
     virtual void prepare();
 
     virtual void release() = 0;
 
 protected:
+    virtual bool prepareDecoder() = 0;
+
+    virtual void onDecoderPrepared() = 0;
+
     virtual void decode();
+
+    virtual int decodePacket() = 0;
 
 protected:
     unique_ptr<string> mUrl = nullptr;
+    volatile int mDecoderState = STATE_IDLE;
 
 private:
     mutex mLockMutex;
     thread *mThread = nullptr;
     condition_variable mCondition;
-
-    AVFormatContext *mAVFormatContext = nullptr;
-
-    volatile int mDecoderState = STATE_IDLE;
     bool mDecoderPrepared = false;
 };
 

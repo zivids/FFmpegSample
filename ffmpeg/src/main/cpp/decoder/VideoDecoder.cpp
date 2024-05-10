@@ -8,9 +8,19 @@ VideoDecoder::~VideoDecoder()
 
 }
 
-bool VideoDecoder::prepareDecode()
+bool VideoDecoder::prepareDecoder()
 {
     return false;
+}
+
+void VideoDecoder::onDecoderPrepared()
+{
+
+}
+
+int VideoDecoder::decodePacket()
+{
+    return 0;
 }
 
 void VideoDecoder::release()

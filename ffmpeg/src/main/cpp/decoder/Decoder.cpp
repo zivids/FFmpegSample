@@ -26,6 +26,29 @@ void Decoder::decode()
 {
     if (!mDecoderPrepared)
     {
-        mDecoderPrepared = prepareDecode();
+        mDecoderPrepared = prepareDecoder();
+        onDecoderPrepared();
+        mDecoderState = STATE_PAUSE;
+    }
+
+    for (;;)
+    {
+        if (mDecoderState == STATE_PAUSE)
+        {
+            unique_lock<mutex> lock(mLockMutex);
+            mCondition.wait(lock);
+        }
+
+        if (mDecoderState == STATE_STOP)
+        {
+            break;
+        }
+
+        mDecoderState = STATE_DECODING;
+        if (decodePacket() != 0)
+        {
+            mDecoderState = STATE_PAUSE;
+            unique_lock<mutex> lock(mLockMutex);
+        }
     }
 }
