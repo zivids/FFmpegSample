@@ -4,37 +4,17 @@
 
 #include "TempPlayer.h"
 
+TempPlayer::TempPlayer() : Player()
+{
+    videoDecoder = new VideoDecoder();
+}
+
 TempPlayer::~TempPlayer()
 {
 
 }
 
-void TempPlayer::prepareAsync()
-{
-    if (videoDecoder == nullptr)
-    {
-        return;
-    }
-
-    videoDecoder->prepare();
-}
-
-void TempPlayer::start()
-{
-
-}
-
-void TempPlayer::pause()
-{
-
-}
-
 void TempPlayer::seekTo(float position)
-{
-
-}
-
-void TempPlayer::stop()
 {
 
 }

@@ -12,9 +12,7 @@ using namespace std;
 class VideoDecoder : public Decoder
 {
 public:
-//    VideoDecoder(const string &url) : Decoder(url) {};
-
-    using Decoder::Decoder;
+    VideoDecoder() : Decoder() {};
 
     ~VideoDecoder();
 
@@ -24,7 +22,7 @@ public:
 
     int decodePacket() override;
 
-    void release() override;
+    void stop() override;
 };
 
 #endif //FFMPEGSAMPLE_VIDEODECODER_H

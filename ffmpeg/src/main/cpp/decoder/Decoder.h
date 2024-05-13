@@ -7,6 +7,7 @@
 
 #include <string>
 #include <thread>
+#include "LogUtils.h"
 
 using namespace std;
 
@@ -21,15 +22,23 @@ enum DecoderState
 class Decoder
 {
 public:
-    Decoder(const string &url);
+    Decoder() {};
 
-    virtual ~Decoder() {};
+    virtual ~Decoder();
 
     virtual void setUrl(const string &url);
 
     virtual void prepare();
 
-    virtual void release() = 0;
+    virtual void start();
+
+    virtual void pause();
+
+    virtual void stop();
+
+    bool isDecoderPrepared() const;
+
+    int decoderState() const;
 
 protected:
     virtual bool prepareDecoder() = 0;

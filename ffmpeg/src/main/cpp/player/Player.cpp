@@ -5,14 +5,57 @@
 #include "Player.h"
 #include "LogUtils.h"
 
+Player::~Player()
+{
+    delete videoDecoder;
+    videoDecoder = nullptr;
+}
+
 void Player::setDataSource(const string &url)
 {
-    if (videoDecoder == nullptr)
+    videoDecoder->setUrl(url);
+}
+
+void Player::prepareAsync()
+{
+    videoDecoder->prepare();
+}
+
+void Player::start()
+{
+    if (!videoDecoder->isDecoderPrepared())
     {
-        videoDecoder = new VideoDecoder(url);
+        return;
     }
-    else
+
+    videoDecoder->start();
+}
+
+void Player::pause()
+{
+    if (!videoDecoder->isDecoderPrepared() || videoDecoder->decoderState() != STATE_DECODING)
     {
-        videoDecoder->setUrl(url);
+        return;
     }
+
+    videoDecoder->pause();
+}
+
+void Player::stop()
+{
+    if (!videoDecoder->isDecoderPrepared() || videoDecoder->decoderState() == STATE_STOP
+        || videoDecoder->decoderState() == STATE_IDLE)
+    {
+        return;
+    }
+
+    videoDecoder->stop();
+}
+
+void Player::release()
+{
+    stop();
+
+    delete videoDecoder;
+    videoDecoder = nullptr;
 }

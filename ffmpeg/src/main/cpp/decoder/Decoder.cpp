@@ -4,9 +4,14 @@
 
 #include "Decoder.h"
 
-Decoder::Decoder(const string &url)
+Decoder::~Decoder()
 {
-    mUrl = unique_ptr<string>(new string(url));
+    if (mThread != nullptr && mThread->joinable())
+    {
+        mThread->join();
+        delete mThread;
+        mThread = nullptr;
+    }
 }
 
 void Decoder::setUrl(const string &url)
@@ -16,10 +21,44 @@ void Decoder::setUrl(const string &url)
 
 void Decoder::prepare()
 {
+    if (mUrl == nullptr)
+    {
+        return;
+    }
+
     if (mThread == nullptr)
     {
         mThread = new thread(&Decoder::decode, this);
     }
+}
+
+void Decoder::start()
+{
+    mDecoderState = STATE_DECODING;
+    unique_lock<mutex> lock(mLockMutex);
+    mCondition.notify_all();
+}
+
+void Decoder::pause()
+{
+    mDecoderState = STATE_PAUSE;
+}
+
+void Decoder::stop()
+{
+    mDecoderState = STATE_STOP;
+    unique_lock<mutex> lock(mLockMutex);
+    mCondition.notify_all();
+}
+
+int Decoder::decoderState() const
+{
+    return mDecoderState;
+}
+
+bool Decoder::isDecoderPrepared() const
+{
+    return mDecoderPrepared;
 }
 
 void Decoder::decode()
@@ -33,8 +72,9 @@ void Decoder::decode()
 
     for (;;)
     {
-        if (mDecoderState == STATE_PAUSE)
+        while (mDecoderState == STATE_PAUSE)
         {
+            LOGD("decode pause");
             unique_lock<mutex> lock(mLockMutex);
             mCondition.wait(lock);
         }
@@ -44,11 +84,11 @@ void Decoder::decode()
             break;
         }
 
-        mDecoderState = STATE_DECODING;
         if (decodePacket() != 0)
         {
             mDecoderState = STATE_PAUSE;
             unique_lock<mutex> lock(mLockMutex);
+            mCondition.wait(lock);
         }
     }
 }

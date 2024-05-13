@@ -23,7 +23,7 @@ int VideoDecoder::decodePacket()
     return 0;
 }
 
-void VideoDecoder::release()
+void VideoDecoder::stop()
 {
 
 }

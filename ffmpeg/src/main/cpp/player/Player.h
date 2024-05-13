@@ -15,21 +15,21 @@ class Player
 public:
     Player() {};
 
-    virtual ~Player() {};
+    virtual ~Player();
 
     virtual void setDataSource(const string &url);
 
-    virtual void prepareAsync() = 0;
+    virtual void prepareAsync();
 
-    virtual void start() = 0;
+    virtual void start();
 
-    virtual void pause() = 0;
+    virtual void pause();
 
     virtual void seekTo(float position) = 0;
 
-    virtual void stop() = 0;
+    virtual void stop();
 
-    virtual void release() = 0;
+    virtual void release();
 
 protected:
     Decoder *videoDecoder = nullptr;

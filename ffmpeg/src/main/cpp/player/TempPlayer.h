@@ -12,19 +12,11 @@ using namespace std;
 
 class TempPlayer : public Player
 {
-    TempPlayer() {}
+    TempPlayer();
 
     ~TempPlayer();
 
-    void prepareAsync() override;
-
-    void start() override;
-
-    void pause() override;
-
     void seekTo(float position) override;
-
-    void stop() override;
 
     void release() override;
 };
