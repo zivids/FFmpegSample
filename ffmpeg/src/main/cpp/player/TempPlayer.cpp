@@ -9,17 +9,7 @@ TempPlayer::TempPlayer() : Player()
     videoDecoder = new VideoDecoder();
 }
 
-TempPlayer::~TempPlayer()
-{
-
-}
-
 void TempPlayer::seekTo(float position)
-{
-
-}
-
-void TempPlayer::release()
 {
 
 }

@@ -19,12 +19,18 @@ void Decoder::setUrl(const string &url)
     mUrl = unique_ptr<string>(new string(url));
 }
 
-void Decoder::prepare()
+void Decoder::prepare(OnPrepareCallback *callback)
 {
     if (mUrl == nullptr)
     {
         return;
     }
+
+    if (mPrepareCallback != nullptr)
+    {
+        delete mPrepareCallback;
+    }
+    mPrepareCallback = callback;
 
     if (mThread == nullptr)
     {
@@ -66,29 +72,37 @@ void Decoder::decode()
     if (!mDecoderPrepared)
     {
         mDecoderPrepared = prepareDecoder();
-        onDecoderPrepared();
-        mDecoderState = STATE_PAUSE;
     }
 
-    for (;;)
+    if (mDecoderPrepared)
     {
-        while (mDecoderState == STATE_PAUSE)
+        onDecoderPrepared();
+        mDecoderState = STATE_PAUSE;
+        if (mPrepareCallback != nullptr)
         {
-            LOGD("decode pause");
-            unique_lock<mutex> lock(mLockMutex);
-            mCondition.wait(lock);
+            mPrepareCallback->onPrepared();
         }
 
-        if (mDecoderState == STATE_STOP)
+        for (;;)
         {
-            break;
-        }
+            while (mDecoderState == STATE_PAUSE)
+            {
+                LOGD("decode pause");
+                unique_lock<mutex> lock(mLockMutex);
+                mCondition.wait(lock);
+            }
 
-        if (decodePacket() != 0)
-        {
-            mDecoderState = STATE_PAUSE;
-            unique_lock<mutex> lock(mLockMutex);
-            mCondition.wait(lock);
+            if (mDecoderState == STATE_STOP)
+            {
+                break;
+            }
+
+            if (decodePacket() != 0)
+            {
+                mDecoderState = STATE_PAUSE;
+                unique_lock<mutex> lock(mLockMutex);
+                mCondition.wait(lock);
+            }
         }
     }
 }

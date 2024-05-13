@@ -7,8 +7,11 @@
 
 Player::~Player()
 {
-    delete videoDecoder;
-    videoDecoder = nullptr;
+    if (videoDecoder != nullptr)
+    {
+        delete videoDecoder;
+        videoDecoder = nullptr;
+    }
 }
 
 void Player::setDataSource(const string &url)
@@ -16,9 +19,9 @@ void Player::setDataSource(const string &url)
     videoDecoder->setUrl(url);
 }
 
-void Player::prepareAsync()
+void Player::prepareAsync(OnPrepareCallback *callback)
 {
-    videoDecoder->prepare();
+    videoDecoder->prepare(callback);
 }
 
 void Player::start()

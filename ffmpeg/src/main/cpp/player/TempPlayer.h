@@ -14,11 +14,9 @@ class TempPlayer : public Player
 {
     TempPlayer();
 
-    ~TempPlayer();
+    ~TempPlayer() {};
 
     void seekTo(float position) override;
-
-    void release() override;
 };
 
 
