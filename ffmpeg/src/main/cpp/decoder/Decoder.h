@@ -7,7 +7,7 @@
 
 #include <string>
 #include <thread>
-#include "OnPrepareCallback.h"
+#include "PrepareCallback.h"
 #include "LogUtils.h"
 
 using namespace std;
@@ -29,7 +29,7 @@ public:
 
     virtual void setUrl(const string &url);
 
-    virtual void prepare(OnPrepareCallback *callback);
+    virtual void prepare(PrepareCallback *callback);
 
     virtual void start();
 
@@ -58,7 +58,7 @@ private:
     mutex mLockMutex;
     thread *mThread = nullptr;
     condition_variable mCondition;
-    OnPrepareCallback *mPrepareCallback = nullptr;
+    PrepareCallback *mPrepareCallback = nullptr;
 
     bool mDecoderPrepared = false;
 };

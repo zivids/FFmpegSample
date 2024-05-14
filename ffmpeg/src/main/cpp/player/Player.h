@@ -19,7 +19,7 @@ public:
 
     virtual void setDataSource(const string &url);
 
-    virtual void prepareAsync(OnPrepareCallback *callback);
+    virtual void prepareAsync(PrepareCallback *callback);
 
     virtual void start();
 

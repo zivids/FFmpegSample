@@ -12,6 +12,7 @@ using namespace std;
 
 class TempPlayer : public Player
 {
+public:
     TempPlayer();
 
     ~TempPlayer() {};

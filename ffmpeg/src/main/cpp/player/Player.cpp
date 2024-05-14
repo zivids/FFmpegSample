@@ -19,7 +19,7 @@ void Player::setDataSource(const string &url)
     videoDecoder->setUrl(url);
 }
 
-void Player::prepareAsync(OnPrepareCallback *callback)
+void Player::prepareAsync(PrepareCallback *callback)
 {
     videoDecoder->prepare(callback);
 }

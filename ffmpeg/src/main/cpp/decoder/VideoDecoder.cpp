@@ -10,7 +10,7 @@ VideoDecoder::~VideoDecoder()
 
 bool VideoDecoder::prepareDecoder()
 {
-    return false;
+    return true;
 }
 
 void VideoDecoder::onDecoderPrepared()

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import androidx.appcompat.app.AppCompatActivity
 import com.coocent.ffmpeg.FFmpegPlayer
+import com.coocent.ffmpeg.listener.OnPreparedListener
 import com.coocent.ffmpegsample.databinding.ActivityFfmpegBinding
 
 /**
@@ -25,6 +26,14 @@ class FFmpegActivity : AppCompatActivity(), OnClickListener
 
         ffmpegPlayer = FFmpegPlayer()
         ffmpegPlayer.setDataSource("/sdcard/Download/任意门.MP4")
+        ffmpegPlayer.setOnPreparedListener(object : OnPreparedListener
+        {
+            override fun onPrepared()
+            {
+                binding.playButton.isEnabled = true
+                binding.pauseButton.isEnabled = true
+            }
+        })
         binding.surfaceView.setAspectRatio(1, 1)
         binding.surfaceView.holder.addCallback(object : SurfaceHolder.Callback
         {
@@ -53,8 +62,20 @@ class FFmpegActivity : AppCompatActivity(), OnClickListener
     {
         when (v.id)
         {
-            R.id.play_button -> {}
-            R.id.pause_button -> {}
+            R.id.play_button ->
+            {
+                ffmpegPlayer.start()
+            }
+            R.id.pause_button ->
+            {
+                ffmpegPlayer.pause()
+            }
         }
+    }
+
+    override fun onDestroy()
+    {
+        super.onDestroy()
+        ffmpegPlayer.release()
     }
 }

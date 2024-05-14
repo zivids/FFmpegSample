@@ -6,6 +6,11 @@
 
 Decoder::~Decoder()
 {
+    if (mPrepareCallback != nullptr)
+    {
+        delete mPrepareCallback;
+    }
+    mPrepareCallback = nullptr;
     if (mThread != nullptr && mThread->joinable())
     {
         mThread->join();
@@ -19,7 +24,7 @@ void Decoder::setUrl(const string &url)
     mUrl = unique_ptr<string>(new string(url));
 }
 
-void Decoder::prepare(OnPrepareCallback *callback)
+void Decoder::prepare(PrepareCallback *callback)
 {
     if (mUrl == nullptr)
     {
@@ -40,6 +45,12 @@ void Decoder::prepare(OnPrepareCallback *callback)
 
 void Decoder::start()
 {
+    if (!mDecoderPrepared)
+    {
+        LOGW("Decoder does not prepared");
+        return;
+    }
+
     mDecoderState = STATE_DECODING;
     unique_lock<mutex> lock(mLockMutex);
     mCondition.notify_all();
@@ -97,6 +108,7 @@ void Decoder::decode()
                 break;
             }
 
+            LOGD("decoding...");
             if (decodePacket() != 0)
             {
                 mDecoderState = STATE_PAUSE;

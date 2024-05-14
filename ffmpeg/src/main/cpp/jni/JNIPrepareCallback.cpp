@@ -1,17 +1,17 @@
 //
-// Created by Administrator on 2024/5/2.
+// Created by xiongzw on 2024/5/14.
 //
 
-#include "JNIPlayerCallback.h"
+#include "JNIPrepareCallback.h"
 
-JNIPlayerCallback::JNIPlayerCallback(jobject obj)
+JNIPrepareCallback::JNIPrepareCallback(jobject obj)
 {
     JVMUtils::getInstance()->runOnJava([&, this](JNIEnv *env) {
         mObj = env->NewGlobalRef(obj);
     });
 }
 
-JNIPlayerCallback::~JNIPlayerCallback()
+JNIPrepareCallback::~JNIPrepareCallback()
 {
     JVMUtils::getInstance()->runOnJava([&, this](JNIEnv *env) {
         env->DeleteGlobalRef(mObj);
@@ -20,7 +20,7 @@ JNIPlayerCallback::~JNIPlayerCallback()
     mObj = nullptr;
 }
 
-void JNIPlayerCallback::onPrepared()
+void JNIPrepareCallback::onPrepared()
 {
     JVMUtils::getInstance()->runOnJava([&, this](JNIEnv *env) {
         jclass clz = env->GetObjectClass(mObj);

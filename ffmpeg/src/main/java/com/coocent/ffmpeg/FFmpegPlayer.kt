@@ -1,11 +1,12 @@
 package com.coocent.ffmpeg
 
-import android.media.MediaPlayer
+import android.os.Handler
+import android.os.Looper
 import android.view.Surface
 import com.coocent.ffmpeg.listener.OnPreparedListener
 
 /**
- * @author coocent-camera002
+ * @author xiongzw
  * @date Created on 2024/4/29.
  */
 class FFmpegPlayer : OnPreparedListener
@@ -23,6 +24,7 @@ class FFmpegPlayer : OnPreparedListener
     }
 
     private var playerHandle: Long = -1L
+    private val handle: Handler = Handler(Looper.getMainLooper())
     private var onPreparedListener: OnPreparedListener? = null
 
     init
@@ -36,7 +38,9 @@ class FFmpegPlayer : OnPreparedListener
 
     override fun onPrepared()
     {
-        onPreparedListener?.onPrepared()
+        handle.post {
+            onPreparedListener?.onPrepared()
+        }
     }
 
     fun setDataSource(path: String)
@@ -66,6 +70,7 @@ class FFmpegPlayer : OnPreparedListener
 
     fun release()
     {
+        handle.removeCallbacksAndMessages(null)
         nativeRelease(playerHandle)
         playerHandle = -1L
     }
