@@ -5,6 +5,7 @@
 #ifndef FFMPEGSAMPLE_PLAYER_H
 #define FFMPEGSAMPLE_PLAYER_H
 
+#include <android/native_window.h>
 #include <string>
 #include "VideoDecoder.h"
 
@@ -18,6 +19,8 @@ public:
     virtual ~Player();
 
     virtual void setDataSource(const string &url);
+
+    virtual void setSurface(ANativeWindow *nativeWindow);
 
     virtual void prepareAsync(PrepareCallback *callback);
 

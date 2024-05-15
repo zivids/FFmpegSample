@@ -13,6 +13,7 @@ find_library( log-lib
 include_directories( ${FFMPEG_HEADER_DIR}
                      ${CMAKE_SOURCE_DIR}/player
                      ${CMAKE_SOURCE_DIR}/decoder
+                     ${CMAKE_SOURCE_DIR}/render
                      ${CMAKE_SOURCE_DIR}/utils
                      ${CMAKE_SOURCE_DIR}/jni
                      ${CMAKE_SOURCE_DIR}/callback)
@@ -63,6 +64,7 @@ file( GLOB SRC_FILE
       ${CMAKE_SOURCE_DIR}/*.cpp
       ${CMAKE_SOURCE_DIR}/player/*.cpp
       ${CMAKE_SOURCE_DIR}/decoder/*.cpp
+      ${CMAKE_SOURCE_DIR}/render/*.cpp
       ${CMAKE_SOURCE_DIR}/jni/*.cpp
       ${CMAKE_SOURCE_DIR}/callback/*.cpp
       ${CMAKE_SOURCE_DIR}/utils/*.cpp)

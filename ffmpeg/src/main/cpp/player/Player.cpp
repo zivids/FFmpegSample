@@ -19,6 +19,11 @@ void Player::setDataSource(const string &url)
     videoDecoder->setUrl(url);
 }
 
+void Player::setSurface(ANativeWindow *nativeWindow)
+{
+
+}
+
 void Player::prepareAsync(PrepareCallback *callback)
 {
     videoDecoder->prepare(callback);
