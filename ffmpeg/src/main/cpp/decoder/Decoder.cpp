@@ -63,6 +63,7 @@ void Decoder::pause()
 
 void Decoder::stop()
 {
+    mDecoderPrepared = false;
     mDecoderState = STATE_STOP;
     unique_lock<mutex> lock(mLockMutex);
     mCondition.notify_all();
