@@ -7,9 +7,21 @@
 
 #include <android/native_window.h>
 #include <string>
-#include "VideoDecoder.h"
+#include <thread>
+#include "Decoder.h"
+#include "Render.h"
+#include "PrepareCallback.h"
 
 using namespace std;
+
+enum PlayerState
+{
+    STATE_IDLE,
+    STATE_PREPARED,
+    STATE_STARTED,
+    STATE_PAUSED,
+    STATE_STOPPED,
+};
 
 class Player
 {
@@ -35,8 +47,18 @@ public:
     virtual void release();
 
 protected:
-    Decoder *videoDecoder = nullptr;
-    Decoder *audioDecoder = nullptr;
+    virtual void prepare(PrepareCallback *callback);
+
+protected:
+    Decoder *mVideoDecoder = nullptr;
+    Decoder *mAudioDecoder = nullptr;
+    Render *mRender = nullptr;
+
+private:
+    mutex mLockMutex;
+    thread *mThread = nullptr;
+    condition_variable mCondition;
+    volatile int mPlayerState = STATE_IDLE;
 };
 
 

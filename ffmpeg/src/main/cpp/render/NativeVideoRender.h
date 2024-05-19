@@ -17,7 +17,9 @@ class NativeVideoRender : public Render
 public:
     NativeVideoRender() : Render() {}
 
-    ~NativeVideoRender() override;
+    ~NativeVideoRender();
+
+    virtual void setNativeWindow(ANativeWindow *nativeWindow) override;
 
     void prepareRender(ANativeWindow *nativeWindow, AVCodecContext *avCodecContext) override;
 

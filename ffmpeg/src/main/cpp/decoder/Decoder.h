@@ -7,18 +7,17 @@
 
 #include <string>
 #include <thread>
-#include "PrepareCallback.h"
 #include "LogUtils.h"
 
 using namespace std;
 
-enum DecoderState
-{
-    STATE_IDLE,
-    STATE_DECODING,
-    STATE_PAUSE,
-    STATE_STOP,
-};
+//enum DecoderState
+//{
+//    STATE_IDLE,
+//    STATE_DECODING,
+//    STATE_PAUSE,
+//    STATE_STOP,
+//};
 
 class Decoder
 {
@@ -29,7 +28,7 @@ public:
 
     virtual void setUrl(const string &url);
 
-    virtual void prepare(PrepareCallback *callback);
+    virtual bool prepare();
 
     virtual void start();
 
@@ -39,7 +38,7 @@ public:
 
     bool isDecoderPrepared() const;
 
-    int decoderState() const;
+//    int decoderState() const;
 
 protected:
     virtual bool prepareDecoder() = 0;
@@ -52,13 +51,12 @@ protected:
 
 protected:
     unique_ptr<string> mUrl = nullptr;
-    volatile int mDecoderState = STATE_IDLE;
+//    volatile int mDecoderState = STATE_IDLE;
 
 private:
     mutex mLockMutex;
     thread *mThread = nullptr;
     condition_variable mCondition;
-    PrepareCallback *mPrepareCallback = nullptr;
 
     bool mDecoderPrepared = false;
 };

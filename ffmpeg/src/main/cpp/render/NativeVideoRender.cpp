@@ -9,6 +9,11 @@ NativeVideoRender::~NativeVideoRender()
 
 }
 
+void NativeVideoRender::setNativeWindow(ANativeWindow *nativeWindow)
+{
+    mNativeWindow = nativeWindow;
+}
+
 void NativeVideoRender::prepareRender(ANativeWindow *nativeWindow, AVCodecContext *avCodecContext)
 {
     int videoWidth = avCodecContext->width;

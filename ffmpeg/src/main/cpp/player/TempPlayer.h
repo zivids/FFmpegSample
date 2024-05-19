@@ -6,6 +6,8 @@
 #define FFMPEGSAMPLE_TEMPPLAYER_H
 
 #include "Player.h"
+#include "VideoDecoder.h"
+#include "NativeVideoRender.h"
 #include <string>
 
 using namespace std;

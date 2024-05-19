@@ -6,7 +6,8 @@
 
 TempPlayer::TempPlayer() : Player()
 {
-    videoDecoder = new VideoDecoder();
+    mVideoDecoder = new VideoDecoder();
+    mRender = new NativeVideoRender();
 }
 
 void TempPlayer::seekTo(float position)

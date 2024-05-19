@@ -7,63 +7,109 @@
 
 Player::~Player()
 {
-    if (videoDecoder != nullptr)
+    if (mRender != nullptr)
     {
-        delete videoDecoder;
-        videoDecoder = nullptr;
+        delete mRender;
+        mRender = nullptr;
+    }
+
+    if (mVideoDecoder != nullptr)
+    {
+        delete mVideoDecoder;
+        mVideoDecoder = nullptr;
     }
 }
 
 void Player::setDataSource(const string &url)
 {
-    videoDecoder->setUrl(url);
+    mVideoDecoder->setUrl(url);
 }
 
 void Player::setSurface(ANativeWindow *nativeWindow)
 {
-
+    mRender->setNativeWindow(nativeWindow);
 }
 
 void Player::prepareAsync(PrepareCallback *callback)
 {
-    videoDecoder->prepare(callback);
+    if (mThread == nullptr)
+    {
+        mThread = new thread(&Player::prepare, this, callback);
+    }
+}
+
+void Player::prepare(PrepareCallback *callback)
+{
+    bool decoderPrepared = mVideoDecoder->prepare();
+    if (!decoderPrepared)
+    {
+        return;
+    }
+
+    mRender->prepareRender();
+    mPlayerState = STATE_PREPARED;
+    callback->onPrepared();
+
+    for (;;)
+    {
+        while (mPlayerState == STATE_PAUSED)
+        {
+            unique_lock<mutex> lock(mLockMutex);
+            mCondition.wait(lock);
+        }
+
+        if (mPlayerState == STATE_STOPPED)
+        {
+            break;
+        }
+
+        if (decodePacket() != 0)
+        {
+            mPlayerState = STATE_PAUSED;
+            unique_lock<mutex> lock(mLockMutex);
+            mCondition.wait(lock);
+        }
+    }
 }
 
 void Player::start()
 {
-    if (!videoDecoder->isDecoderPrepared())
+    if (!mVideoDecoder->isDecoderPrepared())
     {
         return;
     }
 
-    videoDecoder->start();
+    mVideoDecoder->start();
 }
 
 void Player::pause()
 {
-    if (!videoDecoder->isDecoderPrepared() || videoDecoder->decoderState() != STATE_DECODING)
+    if (!mVideoDecoder->isDecoderPrepared() || mVideoDecoder->decoderState() != STATE_DECODING)
     {
         return;
     }
 
-    videoDecoder->pause();
+    mVideoDecoder->pause();
 }
 
 void Player::stop()
 {
-    if (!videoDecoder->isDecoderPrepared() || videoDecoder->decoderState() == STATE_STOP
-        || videoDecoder->decoderState() == STATE_IDLE)
+    if (!mVideoDecoder->isDecoderPrepared() || mVideoDecoder->decoderState() == STATE_STOP
+        || mVideoDecoder->decoderState() == STATE_IDLE)
     {
         return;
     }
 
-    videoDecoder->stop();
+    mVideoDecoder->stop();
 }
 
 void Player::release()
 {
     stop();
 
-    delete videoDecoder;
-    videoDecoder = nullptr;
+    delete mRender;
+    mRender = nullptr;
+
+    delete mVideoDecoder;
+    mVideoDecoder = nullptr;
 }

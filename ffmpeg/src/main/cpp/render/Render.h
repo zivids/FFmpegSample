@@ -15,12 +15,14 @@ class Render
 {
 public:
     Render() {}
-    virtual ~Render();
+    virtual ~Render() = 0;
 
+    virtual void setNativeWindow(ANativeWindow *nativeWindow) = 0;
     virtual void prepareRender(ANativeWindow *nativeWindow, AVCodecContext *avCodecContext) = 0;
     virtual void render() = 0;
 
 protected:
+    ANativeWindow *mNativeWindow = nullptr;
     int mRenderWidth;
     int mRenderHeight;
 };
