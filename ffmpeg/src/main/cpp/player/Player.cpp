@@ -46,7 +46,9 @@ void Player::prepare(PrepareCallback *callback)
         return;
     }
 
-    mRender->prepareRender();
+    mRender->prepareRender(mVideoDecoder->getVideoWidth(),
+                           mVideoDecoder->getVideoHeight(),
+                           mVideoDecoder->getPixelFormat());
     mPlayerState = STATE_PREPARED;
     callback->onPrepared();
 
@@ -63,7 +65,7 @@ void Player::prepare(PrepareCallback *callback)
             break;
         }
 
-        if (decodePacket() != 0)
+        if (mVideoDecoder->decode() != 0)
         {
             mPlayerState = STATE_PAUSED;
             unique_lock<mutex> lock(mLockMutex);
@@ -74,31 +76,31 @@ void Player::prepare(PrepareCallback *callback)
 
 void Player::start()
 {
-    if (!mVideoDecoder->isDecoderPrepared())
-    {
-        return;
-    }
-
-    mVideoDecoder->start();
+//    if (!mVideoDecoder->isDecoderPrepared())
+//    {
+//        return;
+//    }
+//
+//    mVideoDecoder->start();
 }
 
 void Player::pause()
 {
-    if (!mVideoDecoder->isDecoderPrepared() || mVideoDecoder->decoderState() != STATE_DECODING)
-    {
-        return;
-    }
-
-    mVideoDecoder->pause();
+//    if (!mVideoDecoder->isDecoderPrepared() || mVideoDecoder->decoderState() != STATE_DECODING)
+//    {
+//        return;
+//    }
+//
+//    mVideoDecoder->pause();
 }
 
 void Player::stop()
 {
-    if (!mVideoDecoder->isDecoderPrepared() || mVideoDecoder->decoderState() == STATE_STOP
-        || mVideoDecoder->decoderState() == STATE_IDLE)
-    {
-        return;
-    }
+//    if (!mVideoDecoder->isDecoderPrepared() || mVideoDecoder->decoderState() == STATE_STOP
+//        || mVideoDecoder->decoderState() == STATE_IDLE)
+//    {
+//        return;
+//    }
 
     mVideoDecoder->stop();
 }

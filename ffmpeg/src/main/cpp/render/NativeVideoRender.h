@@ -21,7 +21,7 @@ public:
 
     virtual void setNativeWindow(ANativeWindow *nativeWindow) override;
 
-    void prepareRender(ANativeWindow *nativeWindow, AVCodecContext *avCodecContext) override;
+    void prepareRender(int videoWidth, int videoHeight, int pixelFormat) override;
 
     void render() override;
 

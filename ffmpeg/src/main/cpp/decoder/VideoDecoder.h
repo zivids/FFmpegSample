@@ -22,6 +22,7 @@ public:
 
     ~VideoDecoder();
 
+protected:
     bool prepareDecoder() override;
 
     void onDecoderPrepared() override;
@@ -37,8 +38,6 @@ private:
     AVPacket *mAVPacket;
     AVFrame *mAVFrame;
     int mStreamIndex = -1;
-    int mVideoWidth;
-    int mVideoHeight;
 };
 
 #endif //FFMPEGSAMPLE_VIDEODECODER_H

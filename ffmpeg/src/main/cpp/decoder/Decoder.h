@@ -11,14 +11,6 @@
 
 using namespace std;
 
-//enum DecoderState
-//{
-//    STATE_IDLE,
-//    STATE_DECODING,
-//    STATE_PAUSE,
-//    STATE_STOP,
-//};
-
 class Decoder
 {
 public:
@@ -30,34 +22,32 @@ public:
 
     virtual bool prepare();
 
-    virtual void start();
-
-    virtual void pause();
+    virtual int decode();
 
     virtual void stop();
 
     bool isDecoderPrepared() const;
 
-//    int decoderState() const;
+    int getVideoWidth() const;
+
+    int getVideoHeight() const;
+
+    int getPixelFormat() const;
 
 protected:
     virtual bool prepareDecoder() = 0;
 
     virtual void onDecoderPrepared() = 0;
 
-    virtual void decode();
-
     virtual int decodePacket() = 0;
 
 protected:
     unique_ptr<string> mUrl = nullptr;
-//    volatile int mDecoderState = STATE_IDLE;
+    int mPixelFormat;
+    int mVideoWidth = 0;
+    int mVideoHeight = 0;
 
 private:
-    mutex mLockMutex;
-    thread *mThread = nullptr;
-    condition_variable mCondition;
-
     bool mDecoderPrepared = false;
 };
 

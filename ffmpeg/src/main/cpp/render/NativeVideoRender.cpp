@@ -14,12 +14,10 @@ void NativeVideoRender::setNativeWindow(ANativeWindow *nativeWindow)
     mNativeWindow = nativeWindow;
 }
 
-void NativeVideoRender::prepareRender(ANativeWindow *nativeWindow, AVCodecContext *avCodecContext)
+void NativeVideoRender::prepareRender(int videoWidth, int videoHeight, int pixelFormat)
 {
-    int videoWidth = avCodecContext->width;
-    int videoHeight = avCodecContext->height;
-    int windowWidth = ANativeWindow_getWidth(nativeWindow);
-    int windowHeight = ANativeWindow_getHeight(nativeWindow);
+    int windowWidth = ANativeWindow_getWidth(mNativeWindow);
+    int windowHeight = ANativeWindow_getHeight(mNativeWindow);
 
     if (windowWidth < windowHeight * videoWidth / videoHeight)
     {
@@ -32,7 +30,7 @@ void NativeVideoRender::prepareRender(ANativeWindow *nativeWindow, AVCodecContex
         mRenderHeight = windowHeight;
     }
 
-    ANativeWindow_setBuffersGeometry(nativeWindow, mRenderWidth,
+    ANativeWindow_setBuffersGeometry(mNativeWindow, mRenderWidth,
                                      mRenderHeight, WINDOW_FORMAT_RGBA_8888);
 
     if (mRGBFrame == nullptr)
@@ -49,7 +47,7 @@ void NativeVideoRender::prepareRender(ANativeWindow *nativeWindow, AVCodecContex
     av_image_fill_arrays(mRGBFrame->data, mRGBFrame->linesize,mBuffer,
                          AV_PIX_FMT_RGBA, mRenderWidth, mRenderHeight, 1);
 
-    mSwsContext = sws_getContext(videoWidth, videoHeight, avCodecContext->pix_fmt,
+    mSwsContext = sws_getContext(videoWidth, videoHeight, static_cast<AVPixelFormat>(pixelFormat),
                                  mRenderWidth, mRenderHeight, AV_PIX_FMT_RGBA,
                                  SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
 }

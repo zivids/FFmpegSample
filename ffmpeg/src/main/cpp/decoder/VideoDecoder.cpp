@@ -82,11 +82,20 @@ void VideoDecoder::onDecoderPrepared()
 
     mVideoWidth = mAVCodecContext->width;
     mVideoHeight = mAVCodecContext->height;
+    mPixelFormat = mAVCodecContext->pix_fmt;
 }
 
 int VideoDecoder::decodePacket()
 {
-    return 0;
+    int result = av_read_frame(mAVFormatContext, mAVPacket);
+    if (result == 0)
+    {
+        if (mAVPacket->stream_index != mStreamIndex)
+        {
+            return -1;
+        }
+    }
+    return -1;
 }
 
 void VideoDecoder::stop()

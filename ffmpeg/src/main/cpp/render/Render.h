@@ -18,8 +18,18 @@ public:
     virtual ~Render() = 0;
 
     virtual void setNativeWindow(ANativeWindow *nativeWindow) = 0;
-    virtual void prepareRender(ANativeWindow *nativeWindow, AVCodecContext *avCodecContext) = 0;
+    virtual void prepareRender(int videoWidth, int videoHeight, int pixelFormat) = 0;
     virtual void render() = 0;
+
+    int getRenderWidth() const
+    {
+        return mRenderWidth;
+    }
+
+    int getRenderHeight() const
+    {
+        return mRenderHeight;
+    }
 
 protected:
     ANativeWindow *mNativeWindow = nullptr;
