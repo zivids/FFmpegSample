@@ -22,6 +22,8 @@ public:
 
     ~VideoDecoder();
 
+    int receiveFrame() override;
+
 protected:
     bool prepareDecoder() override;
 

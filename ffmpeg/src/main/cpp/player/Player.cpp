@@ -65,11 +65,25 @@ void Player::prepare(PrepareCallback *callback)
             break;
         }
 
-        if (mVideoDecoder->decode() != 0)
+        int decodeResult = mVideoDecoder->decode();
+        if (decodeResult == DECODE_EOF)
         {
             mPlayerState = STATE_PAUSED;
             unique_lock<mutex> lock(mLockMutex);
             mCondition.wait(lock);
+        }
+        else if (decodeResult == DECODE_AGAIN)
+        {
+            continue;
+        }
+        else if (decodeResult == DECODE_ERR)
+        {
+            break;
+        }
+        else
+        {
+            mVideoDecoder->receiveFrame();
+            mRender->render();
         }
     }
 }

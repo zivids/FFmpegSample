@@ -5,7 +5,8 @@
 
 VideoDecoder::~VideoDecoder()
 {
-
+    av_packet_free(&mAVPacket);
+    mAVPacket = nullptr;
 }
 
 bool VideoDecoder::prepareDecoder()
@@ -87,15 +88,89 @@ void VideoDecoder::onDecoderPrepared()
 
 int VideoDecoder::decodePacket()
 {
-    int result = av_read_frame(mAVFormatContext, mAVPacket);
-    if (result == 0)
+    if (mAVPacket->size > 0)
     {
-        if (mAVPacket->stream_index != mStreamIndex)
+        return DECODE_DONE;
+    }
+    else
+    {
+        int result = av_read_frame(mAVFormatContext, mAVPacket);
+        if (result == 0)
         {
-            return -1;
+            if (mAVPacket->stream_index != mStreamIndex)
+            {
+                av_packet_unref(mAVPacket);
+                return DECODE_AGAIN;
+            }
+
+            switch (avcodec_send_packet(mAVCodecContext, mAVPacket))
+            {
+                case 0:
+                {
+                    av_packet_unref(mAVPacket);
+                    return DECODE_DONE;
+                }
+
+                case AVERROR_EOF:
+                {
+                    av_packet_unref(mAVPacket);
+                    return DECODE_EOF;
+                }
+
+                case AVERROR(EAGAIN):
+                {
+                    return DECODE_AGAIN;
+                }
+
+                case AVERROR(ENOMEM):
+                case AVERROR(EINVAL):
+                default:
+                {
+                    av_packet_unref(mAVPacket);
+                    return DECODE_ERR;
+                }
+            }
+        }
+        else
+        {
+            av_packet_unref(mAVPacket);
+            if (result == AVERROR_EOF || result == AVERROR_EXIT || avio_feof(mAVFormatContext->pb))
+            {
+                avcodec_send_packet(mAVCodecContext, nullptr);
+            }
+            return DECODE_AGAIN;
         }
     }
-    return -1;
+}
+
+int VideoDecoder::receiveFrame()
+{
+    switch (avcodec_receive_frame(mAVCodecContext, mAVFrame))
+    {
+        case 0:
+        {
+            
+        }
+
+        case AVERROR_EOF:
+        {
+            
+        }
+
+        case AVERROR(EAGAIN):
+        {
+
+        }
+
+        case AVERROR(EINVAL):
+        case AVERROR_INPUT_CHANGED:
+        default:
+        {
+
+        }
+    }
+
+    return 0;
 }
 
 void VideoDecoder::stop()

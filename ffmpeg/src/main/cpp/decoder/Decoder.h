@@ -11,6 +11,11 @@
 
 using namespace std;
 
+const int DECODE_ERR = -2;
+const int DECODE_EOF = -1;
+const int DECODE_DONE = 0;
+const int DECODE_AGAIN = 1;
+
 class Decoder
 {
 public:
@@ -23,6 +28,8 @@ public:
     virtual bool prepare();
 
     virtual int decode();
+
+    virtual int receiveFrame() = 0;
 
     virtual void stop();
 
