@@ -49,10 +49,10 @@ void Player::prepare(PrepareCallback *callback)
     mRender->prepareRender(mVideoDecoder->getVideoWidth(),
                            mVideoDecoder->getVideoHeight(),
                            mVideoDecoder->getPixelFormat());
-    mPlayerState = STATE_PREPARED;
+    mPlayerState = STATE_PAUSED;
     callback->onPrepared();
 
-    for (;;)
+    while (!mInputEOF || !mOutputEOF)
     {
         while (mPlayerState == STATE_PAUSED)
         {
@@ -65,47 +65,50 @@ void Player::prepare(PrepareCallback *callback)
             break;
         }
 
-        int decodeResult = mVideoDecoder->decode();
-        if (decodeResult == DECODE_EOF)
+        if (!mInputEOF)
         {
-            mPlayerState = STATE_PAUSED;
-            unique_lock<mutex> lock(mLockMutex);
-            mCondition.wait(lock);
+            int decodeResult = mVideoDecoder->decode();
+            if (decodeResult == RESULT_EOF || decodeResult == RESULT_ERR)
+            {
+                mInputEOF = true;
+            }
+            else if (decodeResult == RESULT_AGAIN)
+            {
+                continue;
+            }
         }
-        else if (decodeResult == DECODE_AGAIN)
+
+        if (!mOutputEOF)
         {
-            continue;
-        }
-        else if (decodeResult == DECODE_ERR)
-        {
-            break;
-        }
-        else
-        {
-            mVideoDecoder->receiveFrame();
-            mRender->render();
+            int receiveResult = mVideoDecoder->receiveFrame();
+            if (receiveResult == RESULT_EOF || receiveResult == RESULT_ERR)
+            {
+                mPlayerState = STATE_STOPPED;
+                mOutputEOF = true;
+            }
+            else if (receiveResult == RESULT_AGAIN)
+            {
+                continue;
+            }
+            else
+            {
+                mRender->render(mVideoDecoder->getSrcSlice(),
+                                mVideoDecoder->getSrcStride());
+            }
         }
     }
 }
 
 void Player::start()
 {
-//    if (!mVideoDecoder->isDecoderPrepared())
-//    {
-//        return;
-//    }
-//
-//    mVideoDecoder->start();
+    mPlayerState = STATE_STARTED;
+    unique_lock<mutex> lock(mLockMutex);
+    mCondition.notify_all();
 }
 
 void Player::pause()
 {
-//    if (!mVideoDecoder->isDecoderPrepared() || mVideoDecoder->decoderState() != STATE_DECODING)
-//    {
-//        return;
-//    }
-//
-//    mVideoDecoder->pause();
+    mPlayerState = STATE_PAUSED;
 }
 
 void Player::stop()

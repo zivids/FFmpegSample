@@ -90,7 +90,7 @@ int VideoDecoder::decodePacket()
 {
     if (mAVPacket->size > 0)
     {
-        return DECODE_DONE;
+        return RESULT_DONE;
     }
     else
     {
@@ -100,26 +100,26 @@ int VideoDecoder::decodePacket()
             if (mAVPacket->stream_index != mStreamIndex)
             {
                 av_packet_unref(mAVPacket);
-                return DECODE_AGAIN;
+                return RESULT_AGAIN;
             }
 
             switch (avcodec_send_packet(mAVCodecContext, mAVPacket))
             {
                 case 0:
                 {
-                    av_packet_unref(mAVPacket);
-                    return DECODE_DONE;
+//                    av_packet_unref(mAVPacket);
+                    return RESULT_DONE;
                 }
 
                 case AVERROR_EOF:
                 {
                     av_packet_unref(mAVPacket);
-                    return DECODE_EOF;
+                    return RESULT_EOF;
                 }
 
                 case AVERROR(EAGAIN):
                 {
-                    return DECODE_AGAIN;
+                    return RESULT_AGAIN;
                 }
 
                 case AVERROR(ENOMEM):
@@ -127,7 +127,7 @@ int VideoDecoder::decodePacket()
                 default:
                 {
                     av_packet_unref(mAVPacket);
-                    return DECODE_ERR;
+                    return RESULT_ERR;
                 }
             }
         }
@@ -138,7 +138,7 @@ int VideoDecoder::decodePacket()
             {
                 avcodec_send_packet(mAVCodecContext, nullptr);
             }
-            return DECODE_AGAIN;
+            return RESULT_EOF;
         }
     }
 }
@@ -149,28 +149,40 @@ int VideoDecoder::receiveFrame()
     {
         case 0:
         {
-            
+            av_packet_unref(mAVPacket);
+            return RESULT_DONE;
         }
 
         case AVERROR_EOF:
         {
-            
+            avcodec_flush_buffers(mAVCodecContext);
+            return RESULT_EOF;
         }
 
         case AVERROR(EAGAIN):
         {
-
+            avcodec_flush_buffers(mAVCodecContext);
+            return RESULT_AGAIN;
         }
 
         case AVERROR(EINVAL):
         case AVERROR_INPUT_CHANGED:
         default:
         {
-
+            avcodec_flush_buffers(mAVCodecContext);
+            return RESULT_ERR;
         }
     }
+}
 
-    return 0;
+uint8_t** VideoDecoder::getSrcSlice()
+{
+    return mAVFrame->data;
+}
+
+int* VideoDecoder::getSrcStride()
+{
+    return mAVFrame->linesize;
 }
 
 void VideoDecoder::stop()

@@ -51,7 +51,7 @@ protected:
 
 protected:
     Decoder *mVideoDecoder = nullptr;
-    Decoder *mAudioDecoder = nullptr;
+//    Decoder *mAudioDecoder = nullptr;
     Render *mRender = nullptr;
 
 private:
@@ -59,6 +59,8 @@ private:
     thread *mThread = nullptr;
     condition_variable mCondition;
     volatile int mPlayerState = STATE_IDLE;
+    bool mInputEOF;
+    bool mOutputEOF;
 };
 
 

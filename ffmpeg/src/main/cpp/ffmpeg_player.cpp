@@ -4,7 +4,6 @@
 #include <jni.h>
 #include <cstring>
 #include "JVMUtils.h"
-#include "FFmpegPlayer.h"
 #include "TempPlayer.h"
 #include "JNIPrepareCallback.h"
 
@@ -140,6 +139,6 @@ JNIEXPORT void JNICALL
 Java_com_coocent_ffmpeg_FFmpegPlayer_nativeSetSurface(JNIEnv *env, jobject thiz, jlong handle,
                                                       jobject surface)
 {
-//    auto *player = reinterpret_cast<FFmpegPlayer *>(handle);
-//    player->setSurface(ANativeWindow_fromSurface(env, surface));
+    auto *player = reinterpret_cast<Player *>(handle);
+    player->setSurface(ANativeWindow_fromSurface(env, surface));
 }

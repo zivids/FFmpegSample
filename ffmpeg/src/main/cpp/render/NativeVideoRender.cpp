@@ -14,8 +14,10 @@ void NativeVideoRender::setNativeWindow(ANativeWindow *nativeWindow)
     mNativeWindow = nativeWindow;
 }
 
-void NativeVideoRender::prepareRender(int videoWidth, int videoHeight, int pixelFormat)
+void NativeVideoRender::prepareRender(int videoWidth, int videoHeight, AVPixelFormat pixelFormat)
 {
+    mVideoWidth = videoWidth;
+    mVideoHeight = videoHeight;
     int windowWidth = ANativeWindow_getWidth(mNativeWindow);
     int windowHeight = ANativeWindow_getHeight(mNativeWindow);
 
@@ -47,12 +49,23 @@ void NativeVideoRender::prepareRender(int videoWidth, int videoHeight, int pixel
     av_image_fill_arrays(mRGBFrame->data, mRGBFrame->linesize,mBuffer,
                          AV_PIX_FMT_RGBA, mRenderWidth, mRenderHeight, 1);
 
-    mSwsContext = sws_getContext(videoWidth, videoHeight, static_cast<AVPixelFormat>(pixelFormat),
+    mSwsContext = sws_getContext(videoWidth, videoHeight, pixelFormat,
                                  mRenderWidth, mRenderHeight, AV_PIX_FMT_RGBA,
                                  SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
 }
 
-void NativeVideoRender::render()
+void NativeVideoRender::render(const uint8_t *const srcSlice[], const int srcStride[])
 {
+    sws_scale(mSwsContext, srcSlice, srcStride, 0, mVideoHeight,
+              mRGBFrame->data, mRGBFrame->linesize);
+    ANativeWindow_Buffer nativeWindowBuffer;
+    ANativeWindow_lock(mNativeWindow, &nativeWindowBuffer, nullptr);
+    auto *dstBuffer = static_cast<uint8_t *>(nativeWindowBuffer.bits);
 
+    int srcLineSize = mRenderWidth * 4;
+    int dstLineSize = nativeWindowBuffer.stride * 4;
+    for (int i = 0; i < mRenderHeight; ++i) {
+        memcpy(dstBuffer + i * dstLineSize, mRGBFrame->data[0] + i * srcLineSize, srcLineSize);
+    }
+    ANativeWindow_unlockAndPost(mNativeWindow);
 }

@@ -72,6 +72,17 @@ file( GLOB SRC_FILE
 add_library( ffmpeg-sample-player SHARED
              ${SRC_FILE})
 
+#add_library( ffmpeg-sample-player SHARED
+#        ${CMAKE_SOURCE_DIR}/decoder/Decoder.cpp
+#        ${CMAKE_SOURCE_DIR}/decoder/VideoDecoder.cpp
+#        ${CMAKE_SOURCE_DIR}/jni/JNIPrepareCallback.cpp
+#        ${CMAKE_SOURCE_DIR}/player/Player.cpp
+#        ${CMAKE_SOURCE_DIR}/player/TempPlayer.cpp
+#        ${CMAKE_SOURCE_DIR}/player/FFmpegPlayer.cpp
+#        ${CMAKE_SOURCE_DIR}/render/NativeVideoRender.cpp
+#        ${CMAKE_SOURCE_DIR}/utils/JVMUtils.cpp
+#        ${CMAKE_SOURCE_DIR}/ffmpeg_player.cpp )
+
 target_link_libraries( ffmpeg-sample-player
                        android
                        avcodec

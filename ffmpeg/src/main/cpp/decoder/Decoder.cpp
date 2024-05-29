@@ -45,7 +45,7 @@ void Decoder::stop()
 //    mCondition.notify_all();
 }
 
-int Decoder::getPixelFormat() const
+AVPixelFormat Decoder::getPixelFormat() const
 {
     return mPixelFormat;
 }

@@ -24,6 +24,10 @@ public:
 
     int receiveFrame() override;
 
+    uint8_t** getSrcSlice() override;
+
+    int* getSrcStride() override;
+
 protected:
     bool prepareDecoder() override;
 

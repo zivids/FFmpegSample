@@ -19,11 +19,11 @@ public:
 
     ~NativeVideoRender();
 
-    virtual void setNativeWindow(ANativeWindow *nativeWindow) override;
+    void setNativeWindow(ANativeWindow *nativeWindow) override;
 
-    void prepareRender(int videoWidth, int videoHeight, int pixelFormat) override;
+    void prepareRender(int videoWidth, int videoHeight, AVPixelFormat pixelFormat) override;
 
-    void render() override;
+    void render(const uint8_t *const srcSlice[],const int srcStride[]) override;
 
 private:
     AVFrame *mRGBFrame = nullptr;

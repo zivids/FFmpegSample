@@ -7,14 +7,18 @@
 
 #include <string>
 #include <thread>
+#include <stdint.h>
 #include "LogUtils.h"
+extern "C" {
+#include <libavcodec/avcodec.h>
+}
 
 using namespace std;
 
-const int DECODE_ERR = -2;
-const int DECODE_EOF = -1;
-const int DECODE_DONE = 0;
-const int DECODE_AGAIN = 1;
+const int RESULT_ERR = -2;
+const int RESULT_EOF = -1;
+const int RESULT_DONE = 0;
+const int RESULT_AGAIN = 1;
 
 class Decoder
 {
@@ -39,7 +43,11 @@ public:
 
     int getVideoHeight() const;
 
-    int getPixelFormat() const;
+    AVPixelFormat getPixelFormat() const;
+
+    virtual uint8_t** getSrcSlice() = 0;
+
+    virtual int* getSrcStride() = 0;
 
 protected:
     virtual bool prepareDecoder() = 0;
@@ -50,7 +58,7 @@ protected:
 
 protected:
     unique_ptr<string> mUrl = nullptr;
-    int mPixelFormat;
+    AVPixelFormat mPixelFormat;
     int mVideoWidth = 0;
     int mVideoHeight = 0;
 
