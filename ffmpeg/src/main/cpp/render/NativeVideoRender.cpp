@@ -14,7 +14,7 @@ void NativeVideoRender::setNativeWindow(ANativeWindow *nativeWindow)
     mNativeWindow = nativeWindow;
 }
 
-void NativeVideoRender::prepareRender(int videoWidth, int videoHeight, AVPixelFormat pixelFormat)
+void NativeVideoRender::prepareRender(int videoWidth, int videoHeight, const char* pixelFormat)
 {
     mVideoWidth = videoWidth;
     mVideoHeight = videoHeight;
@@ -49,7 +49,11 @@ void NativeVideoRender::prepareRender(int videoWidth, int videoHeight, AVPixelFo
     av_image_fill_arrays(mRGBFrame->data, mRGBFrame->linesize,mBuffer,
                          AV_PIX_FMT_RGBA, mRenderWidth, mRenderHeight, 1);
 
-    mSwsContext = sws_getContext(videoWidth, videoHeight, pixelFormat,
+    if (mSwsContext != nullptr)
+    {
+        sws_freeContext(mSwsContext);
+    }
+    mSwsContext = sws_getContext(videoWidth, videoHeight, av_get_pix_fmt(pixelFormat),
                                  mRenderWidth, mRenderHeight, AV_PIX_FMT_RGBA,
                                  SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
 }

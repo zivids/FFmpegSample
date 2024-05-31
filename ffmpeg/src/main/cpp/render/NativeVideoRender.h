@@ -10,7 +10,7 @@ extern "C" {
 #include <libavutil/frame.h>
 #include <libavutil/imgutils.h>
 #include <libswscale/swscale.h>
-};
+}
 
 class NativeVideoRender : public Render
 {
@@ -21,13 +21,13 @@ public:
 
     void setNativeWindow(ANativeWindow *nativeWindow) override;
 
-    void prepareRender(int videoWidth, int videoHeight, AVPixelFormat pixelFormat) override;
+    void prepareRender(int videoWidth, int videoHeight, const char* pixelFormat) override;
 
-    void render(const uint8_t *const srcSlice[],const int srcStride[]) override;
+    void render(const uint8_t *const srcSlice[], const int srcStride[]) override;
 
 private:
     AVFrame *mRGBFrame = nullptr;
-    SwsContext *mSwsContext;
+    SwsContext *mSwsContext = nullptr;
     uint8_t *mBuffer = nullptr;
 };
 

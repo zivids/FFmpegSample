@@ -38,11 +38,11 @@ protected:
     void stop() override;
 
 private:
-    AVFormatContext *mAVFormatContext;
-    AVCodec *mAVCodec;
-    AVCodecContext *mAVCodecContext;
-    AVPacket *mAVPacket;
-    AVFrame *mAVFrame;
+    AVFormatContext *mAVFormatContext = nullptr;
+    AVCodec *mAVCodec = nullptr;
+    AVCodecContext *mAVCodecContext = nullptr;
+    AVPacket *mAVPacket = nullptr;
+    AVFrame *mAVFrame = nullptr;
     int mStreamIndex = -1;
 };
 

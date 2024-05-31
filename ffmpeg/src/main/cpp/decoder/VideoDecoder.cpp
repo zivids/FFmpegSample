@@ -78,90 +78,97 @@ void VideoDecoder::onDecoderPrepared()
 {
     //创建存储编码数据的结构体
     mAVPacket = av_packet_alloc();
-    //创建存储解码数据的结构体
-    mAVFrame = av_frame_alloc();
 
     mVideoWidth = mAVCodecContext->width;
     mVideoHeight = mAVCodecContext->height;
-    mPixelFormat = mAVCodecContext->pix_fmt;
+    mPixelFormat = av_get_pix_fmt_name(mAVCodecContext->pix_fmt);
 }
 
 int VideoDecoder::decodePacket()
 {
+    int result;
     if (mAVPacket->size > 0)
     {
-        return RESULT_DONE;
+        result = 0;
     }
     else
     {
-        int result = av_read_frame(mAVFormatContext, mAVPacket);
-        if (result == 0)
+        result = av_read_frame(mAVFormatContext, mAVPacket);
+    }
+
+    if (result == 0)
+    {
+        if (mAVPacket->stream_index != mStreamIndex)
         {
-            if (mAVPacket->stream_index != mStreamIndex)
+            av_packet_unref(mAVPacket);
+            return RESULT_AGAIN;
+        }
+
+        switch (avcodec_send_packet(mAVCodecContext, mAVPacket))
+        {
+            case 0:
             {
                 av_packet_unref(mAVPacket);
+                return RESULT_DONE;
+            }
+
+            case AVERROR_EOF:
+            {
+                av_packet_unref(mAVPacket);
+                return RESULT_EOF;
+            }
+
+            case AVERROR(EAGAIN):
+            {
                 return RESULT_AGAIN;
             }
 
-            switch (avcodec_send_packet(mAVCodecContext, mAVPacket))
+            case AVERROR(ENOMEM):
+            case AVERROR(EINVAL):
+            default:
             {
-                case 0:
-                {
-//                    av_packet_unref(mAVPacket);
-                    return RESULT_DONE;
-                }
-
-                case AVERROR_EOF:
-                {
-                    av_packet_unref(mAVPacket);
-                    return RESULT_EOF;
-                }
-
-                case AVERROR(EAGAIN):
-                {
-                    return RESULT_AGAIN;
-                }
-
-                case AVERROR(ENOMEM):
-                case AVERROR(EINVAL):
-                default:
-                {
-                    av_packet_unref(mAVPacket);
-                    return RESULT_ERR;
-                }
+                av_packet_unref(mAVPacket);
+                return RESULT_ERR;
             }
         }
-        else
+    }
+    else
+    {
+        av_packet_unref(mAVPacket);
+        if (result == AVERROR_EOF || result == AVERROR_EXIT || avio_feof(mAVFormatContext->pb))
         {
-            av_packet_unref(mAVPacket);
-            if (result == AVERROR_EOF || result == AVERROR_EXIT || avio_feof(mAVFormatContext->pb))
-            {
-                avcodec_send_packet(mAVCodecContext, nullptr);
-            }
-            return RESULT_EOF;
+            avcodec_send_packet(mAVCodecContext, nullptr);
         }
+        return RESULT_EOF;
     }
 }
 
 int VideoDecoder::receiveFrame()
 {
-    switch (avcodec_receive_frame(mAVCodecContext, mAVFrame))
+    //创建存储解码数据的结构体
+    AVFrame *avFrame = av_frame_alloc();
+    switch (avcodec_receive_frame(mAVCodecContext, avFrame))
     {
         case 0:
         {
-            av_packet_unref(mAVPacket);
+            if (mAVFrame != nullptr)
+            {
+                av_frame_free(&mAVFrame);
+            }
+            mAVFrame = avFrame;
             return RESULT_DONE;
         }
 
         case AVERROR_EOF:
         {
             avcodec_flush_buffers(mAVCodecContext);
+            av_frame_free(&avFrame);
             return RESULT_EOF;
         }
 
         case AVERROR(EAGAIN):
         {
-            avcodec_flush_buffers(mAVCodecContext);
+            av_frame_free(&avFrame);
             return RESULT_AGAIN;
         }
 
@@ -170,6 +177,7 @@ int VideoDecoder::receiveFrame()
         default:
         {
             avcodec_flush_buffers(mAVCodecContext);
+            av_frame_free(&avFrame);
             return RESULT_ERR;
         }
     }

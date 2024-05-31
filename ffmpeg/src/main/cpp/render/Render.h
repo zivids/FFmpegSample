@@ -8,29 +8,16 @@
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
 #include <stdint.h>
-extern "C" {
-#include <libavcodec/avcodec.h>
-}
 
 class Render
 {
 public:
     Render() {}
-    virtual ~Render() = 0;
+    virtual ~Render() {};
 
     virtual void setNativeWindow(ANativeWindow *nativeWindow) = 0;
-    virtual void prepareRender(int videoWidth, int videoHeight, AVPixelFormat pixelFormat) = 0;
-    virtual void render(const uint8_t *const srcSlice[],const int srcStride[]) = 0;
-
-    int getRenderWidth() const
-    {
-        return mRenderWidth;
-    }
-
-    int getRenderHeight() const
-    {
-        return mRenderHeight;
-    }
+    virtual void prepareRender(int videoWidth, int videoHeight, const char* pixelFormat) = 0;
+    virtual void render(const uint8_t *const srcSlice[], const int srcStride[]) = 0;
 
 protected:
     ANativeWindow *mNativeWindow = nullptr;

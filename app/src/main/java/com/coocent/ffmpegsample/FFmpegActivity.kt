@@ -34,7 +34,7 @@ class FFmpegActivity : AppCompatActivity(), OnClickListener
                 binding.pauseButton.isEnabled = true
             }
         })
-        binding.surfaceView.setAspectRatio(1, 1)
+        binding.surfaceView.setAspectRatio(16, 9)
         binding.surfaceView.holder.addCallback(object : SurfaceHolder.Callback
         {
             override fun surfaceCreated(holder: SurfaceHolder)

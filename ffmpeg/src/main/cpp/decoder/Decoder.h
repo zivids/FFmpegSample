@@ -25,7 +25,7 @@ class Decoder
 public:
     Decoder() {};
 
-    virtual ~Decoder();
+    virtual ~Decoder() {};
 
     virtual void setUrl(const string &url);
 
@@ -43,7 +43,7 @@ public:
 
     int getVideoHeight() const;
 
-    AVPixelFormat getPixelFormat() const;
+    const char* getPixelFormat() const;
 
     virtual uint8_t** getSrcSlice() = 0;
 
@@ -58,7 +58,7 @@ protected:
 
 protected:
     unique_ptr<string> mUrl = nullptr;
-    AVPixelFormat mPixelFormat;
+    const char* mPixelFormat;
     int mVideoWidth = 0;
     int mVideoHeight = 0;
 

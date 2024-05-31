@@ -4,7 +4,7 @@
 #include <jni.h>
 #include <cstring>
 #include "JVMUtils.h"
-#include "TempPlayer.h"
+#include "FFmpegPlayer.h"
 #include "JNIPrepareCallback.h"
 
 extern "C" {
@@ -70,7 +70,7 @@ extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_coocent_ffmpeg_FFmpegPlayer_nativeCreatePlayer(JNIEnv *env, jobject thiz)
 {
-    auto *player = new TempPlayer();
+    auto *player = new FFmpegPlayer();
     return reinterpret_cast<jlong>(player);
 }
 

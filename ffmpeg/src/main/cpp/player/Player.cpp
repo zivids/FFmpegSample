@@ -92,8 +92,7 @@ void Player::prepare(PrepareCallback *callback)
             }
             else
             {
-                mRender->render(mVideoDecoder->getSrcSlice(),
-                                mVideoDecoder->getSrcStride());
+                mRender->render(mVideoDecoder->getSrcSlice(), mVideoDecoder->getSrcStride());
             }
         }
     }
@@ -113,12 +112,7 @@ void Player::pause()
 
 void Player::stop()
 {
-//    if (!mVideoDecoder->isDecoderPrepared() || mVideoDecoder->decoderState() == STATE_STOP
-//        || mVideoDecoder->decoderState() == STATE_IDLE)
-//    {
-//        return;
-//    }
-
+    mPlayerState = STATE_STOPPED;
     mVideoDecoder->stop();
 }
 

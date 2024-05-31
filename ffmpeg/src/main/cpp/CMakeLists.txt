@@ -60,28 +60,27 @@ set_target_properties( swscale
                        PROPERTIES IMPORTED_LOCATION
                        ${FFMPEG_LIB_DIR}/libswscale.so )
 
-file( GLOB SRC_FILE
-      ${CMAKE_SOURCE_DIR}/*.cpp
-      ${CMAKE_SOURCE_DIR}/player/*.cpp
-      ${CMAKE_SOURCE_DIR}/decoder/*.cpp
-      ${CMAKE_SOURCE_DIR}/render/*.cpp
-      ${CMAKE_SOURCE_DIR}/jni/*.cpp
-      ${CMAKE_SOURCE_DIR}/callback/*.cpp
-      ${CMAKE_SOURCE_DIR}/utils/*.cpp)
+#file( GLOB SRC_FILE
+#      ${CMAKE_SOURCE_DIR}/*.cpp
+#      ${CMAKE_SOURCE_DIR}/player/*.cpp
+#      ${CMAKE_SOURCE_DIR}/decoder/*.cpp
+#      ${CMAKE_SOURCE_DIR}/render/*.cpp
+#      ${CMAKE_SOURCE_DIR}/jni/*.cpp
+#      ${CMAKE_SOURCE_DIR}/callback/*.cpp
+#      ${CMAKE_SOURCE_DIR}/utils/*.cpp)
+#
+#add_library( ffmpeg-sample-player SHARED
+#             ${SRC_FILE})
 
 add_library( ffmpeg-sample-player SHARED
-             ${SRC_FILE})
-
-#add_library( ffmpeg-sample-player SHARED
-#        ${CMAKE_SOURCE_DIR}/decoder/Decoder.cpp
-#        ${CMAKE_SOURCE_DIR}/decoder/VideoDecoder.cpp
-#        ${CMAKE_SOURCE_DIR}/jni/JNIPrepareCallback.cpp
-#        ${CMAKE_SOURCE_DIR}/player/Player.cpp
-#        ${CMAKE_SOURCE_DIR}/player/TempPlayer.cpp
-#        ${CMAKE_SOURCE_DIR}/player/FFmpegPlayer.cpp
-#        ${CMAKE_SOURCE_DIR}/render/NativeVideoRender.cpp
-#        ${CMAKE_SOURCE_DIR}/utils/JVMUtils.cpp
-#        ${CMAKE_SOURCE_DIR}/ffmpeg_player.cpp )
+        ${CMAKE_SOURCE_DIR}/decoder/Decoder.cpp
+        ${CMAKE_SOURCE_DIR}/decoder/VideoDecoder.cpp
+        ${CMAKE_SOURCE_DIR}/jni/JNIPrepareCallback.cpp
+        ${CMAKE_SOURCE_DIR}/player/Player.cpp
+        ${CMAKE_SOURCE_DIR}/player/FFmpegPlayer.cpp
+        ${CMAKE_SOURCE_DIR}/render/NativeVideoRender.cpp
+        ${CMAKE_SOURCE_DIR}/utils/JVMUtils.cpp
+        ${CMAKE_SOURCE_DIR}/ffmpeg_player.cpp )
 
 target_link_libraries( ffmpeg-sample-player
                        android

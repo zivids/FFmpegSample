@@ -59,8 +59,8 @@ private:
     thread *mThread = nullptr;
     condition_variable mCondition;
     volatile int mPlayerState = STATE_IDLE;
-    bool mInputEOF;
-    bool mOutputEOF;
+    bool mInputEOF = false;
+    bool mOutputEOF = false;
 };
 
 

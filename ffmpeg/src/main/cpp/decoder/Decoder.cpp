@@ -4,10 +4,6 @@
 
 #include "Decoder.h"
 
-Decoder::~Decoder()
-{
-}
-
 void Decoder::setUrl(const string &url)
 {
     mUrl = unique_ptr<string>(new string(url));
@@ -40,12 +36,10 @@ int Decoder::decode()
 
 void Decoder::stop()
 {
-//    mDecoderPrepared = false;
-//    unique_lock<mutex> lock(mLockMutex);
-//    mCondition.notify_all();
+    mDecoderPrepared = false;
 }
 
-AVPixelFormat Decoder::getPixelFormat() const
+const char* Decoder::getPixelFormat() const
 {
     return mPixelFormat;
 }
