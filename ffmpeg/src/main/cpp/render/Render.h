@@ -16,7 +16,7 @@ public:
     virtual ~Render() {};
 
     virtual void setNativeWindow(ANativeWindow *nativeWindow) = 0;
-    virtual void prepareRender(int videoWidth, int videoHeight, const char* pixelFormat) = 0;
+    virtual void prepareRender(int videoWidth, int videoHeight, int rotate, const char* pixelFormat) = 0;
     virtual void render(const uint8_t *const srcSlice[], const int srcStride[]) = 0;
 
 protected:

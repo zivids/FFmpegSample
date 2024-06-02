@@ -82,6 +82,13 @@ void VideoDecoder::onDecoderPrepared()
     mVideoWidth = mAVCodecContext->width;
     mVideoHeight = mAVCodecContext->height;
     mPixelFormat = av_get_pix_fmt_name(mAVCodecContext->pix_fmt);
+
+    AVDictionaryEntry *entry = av_dict_get(mAVFormatContext->streams[mStreamIndex]->metadata,
+                                           "rotate",nullptr, AV_DICT_MATCH_CASE);
+    if (entry != nullptr)
+    {
+        mVideoRotate = atoi(entry->value) % 360;
+    }
 }
 
 int VideoDecoder::decodePacket()

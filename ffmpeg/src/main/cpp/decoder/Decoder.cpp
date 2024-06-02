@@ -54,6 +54,11 @@ int Decoder::getVideoHeight() const
     return mVideoHeight;
 }
 
+int Decoder::getVideoRotate() const
+{
+    return mVideoRotate;
+}
+
 bool Decoder::isDecoderPrepared() const
 {
     return mDecoderPrepared;

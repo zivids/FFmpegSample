@@ -21,7 +21,7 @@ public:
 
     void setNativeWindow(ANativeWindow *nativeWindow) override;
 
-    void prepareRender(int videoWidth, int videoHeight, const char* pixelFormat) override;
+    void prepareRender(int videoWidth, int videoHeight, int rotate, const char* pixelFormat) override;
 
     void render(const uint8_t *const srcSlice[], const int srcStride[]) override;
 

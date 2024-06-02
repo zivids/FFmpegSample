@@ -14,14 +14,14 @@ void NativeVideoRender::setNativeWindow(ANativeWindow *nativeWindow)
     mNativeWindow = nativeWindow;
 }
 
-void NativeVideoRender::prepareRender(int videoWidth, int videoHeight, const char* pixelFormat)
+void NativeVideoRender::prepareRender(int videoWidth, int videoHeight, int rotate, const char* pixelFormat)
 {
     mVideoWidth = videoWidth;
     mVideoHeight = videoHeight;
     int windowWidth = ANativeWindow_getWidth(mNativeWindow);
     int windowHeight = ANativeWindow_getHeight(mNativeWindow);
 
-    if (windowWidth < windowHeight * videoWidth / videoHeight)
+    if (rotate == 0 || rotate == 180)
     {
         mRenderWidth = windowWidth;
         mRenderHeight = windowWidth * videoHeight / videoWidth;

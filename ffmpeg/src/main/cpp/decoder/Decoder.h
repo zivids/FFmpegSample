@@ -43,6 +43,8 @@ public:
 
     int getVideoHeight() const;
 
+    int getVideoRotate() const;
+
     const char* getPixelFormat() const;
 
     virtual uint8_t** getSrcSlice() = 0;
@@ -61,6 +63,7 @@ protected:
     const char* mPixelFormat;
     int mVideoWidth = 0;
     int mVideoHeight = 0;
+    int mVideoRotate = 0;
 
 private:
     bool mDecoderPrepared = false;

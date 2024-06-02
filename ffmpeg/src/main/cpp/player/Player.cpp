@@ -48,6 +48,7 @@ void Player::prepare(PrepareCallback *callback)
 
     mRender->prepareRender(mVideoDecoder->getVideoWidth(),
                            mVideoDecoder->getVideoHeight(),
+                           mVideoDecoder->getVideoRotate(),
                            mVideoDecoder->getPixelFormat());
     mPlayerState = STATE_PAUSED;
     callback->onPrepared();
